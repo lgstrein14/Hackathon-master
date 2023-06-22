@@ -1,0 +1,122 @@
+@page "/anfrage"
+@using VitualReception.Domain.Model;
+
+@inject IChatRepository _chatRepository;
+
+
+<PageTitle>Anfrage</PageTitle>
+
+<style>
+    h3 {
+        color: #333;
+        font-size: 24px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    select,
+    input[type="date"] {
+        width: 200px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    h4 {
+        color: #007bff;
+        font-size: 18px;
+        margin-top: 10px;
+    }
+</style>
+
+
+<h3>Anfrage</h3>
+
+<div>
+    <label for="vorname">Vorname:</label>
+    <input type="text" id="name" @bind="Vorname" />
+</div>
+
+<div>
+    <label for="nachname">Nachname:</label>
+    <input type="text" id="name" @bind="Nachname" />
+</div>
+
+<div>
+    <label for="zimmer">Zimmer:</label>
+    <select id="zimmer" @bind="Zimmer">
+        <option value="">Bitte wählen</option>
+        <option value="Einzelzimmer">Einzelzimmer</option>
+        <option value="Doppelzimmer">Doppelzimmer</option>
+        <option value="Suite">Suite</option>
+    </select>
+</div>
+
+<div>
+    <label for="anreise">Anreise:</label>
+    <input type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")"
+        max="@DateTime.Today.AddDays(100).ToString("yyyy-MM-dd")" id="datum" @bind="Anreise" />
+</div>
+
+<div>
+    <label for="abreise">Abreise:</label>
+    <input type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")"
+        max="@DateTime.Today.AddDays(100).ToString("yyyy-MM-dd")" id="datum" @bind="Abreise" />
+</div>
+
+<br>
+
+<button class="btn btn-primary" @onclick="HandleBuchung">Anfragen</button>
+
+@if (BookingSubmitted)
+{
+    <h4>Anfrage erfolgreich</h4>
+    <p>Vorname: @Vorname</p>
+    <p>Nachname: @Nachname</p>
+    <p>Zimmer: @Zimmer</p>
+    <p>Anreise: @Anreise.ToString("dd.MM.yyyy")</p>
+    <p>Abreise: @Abreise.ToString("dd.MM.yyyy")</p>
+    <p>Anfragenummer: @Anfragenummer</p>
+}
+
+@code {
+    private string Vorname;
+    private string Nachname;
+    private string Zimmer;
+    private DateTime Anreise;
+    private DateTime Abreise;
+    private bool BookingSubmitted;
+    private string Anfragenummer;
+
+    private void HandleBuchung()
+    {
+        // Hier kannst du die Daten an den Buchungsservice senden oder anderweitig verarbeiten
+
+        Anfragenummer = GenerateRandomRequestNumber();
+
+        BookingSubmitted = true;
+    }
+
+
+
+    private string GenerateRandomRequestNumber()
+    {
+        Random random = new Random();
+        int randomNumber = random.Next(100000, 999999);
+        return randomNumber.ToString();
+    }
+}

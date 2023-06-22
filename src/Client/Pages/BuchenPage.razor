@@ -1,0 +1,120 @@
+@page "/buchen"
+@using VitualReception.Domain.Model;
+
+@inject IChatRepository _chatRepository;
+  
+
+<PageTitle>Buchen</PageTitle>
+
+<style>
+    h3 {
+        color: #333;
+        font-size: 24px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    select,
+    input[type="date"] {
+        width: 200px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    h4 {
+        color: #007bff;
+        font-size: 18px;
+        margin-top: 10px;
+    }
+</style>
+
+
+<h3>Buchung</h3>
+
+<div>
+    <label for="name">Name:</label>
+    <input type="text" id="name" @bind="Name" />
+</div>
+
+<div>
+    <label for="zimmer">Zimmer:</label>
+    <select id="zimmer" @bind="Zimmer">
+        <option value="">Bitte wählen</option>
+        <option value="Einzelzimmer">Einzelzimmer</option>
+        <option value="Doppelzimmer">Doppelzimmer</option>
+        <option value="Suite">Suite</option>
+    </select>
+</div>
+
+<div>
+    <label for="datum">Datum:</label>
+    <input type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" max="@DateTime.Today.AddDays(100).ToString("yyyy-MM-dd")" id="datum" @bind="Datum" />
+</div>
+
+<br>
+
+<button class="btn btn-primary" @onclick="HandleBuchung">Buchen</button>
+
+@if (BookingSubmitted)
+{
+    <h4>Buchung erfolgreich</h4>
+    <p>Name: @Name</p>
+    <p>Zimmer: @Zimmer</p>
+    <p>Datum: @Datum.ToString("dd.MM.yyyy")</p>
+    <p>Preis: @GetPreis()</p>
+    <p>Buchungsnummer: @Buchungsnummer</p>
+}
+
+@code {
+    private string Name;
+    private string Zimmer;
+    private DateTime Datum;
+    private bool BookingSubmitted;
+    private string Buchungsnummer;
+
+    private void HandleBuchung()
+    {
+        // Hier kannst du die Daten an den Buchungsservice senden oder anderweitig verarbeiten
+
+        Buchungsnummer = GenerateRandomBookingNumber();
+
+        BookingSubmitted = true;
+    }
+
+    private string GetPreis()
+    {
+        switch (Zimmer)
+        {
+            case "Einzelzimmer":
+                return "100 Euro";
+            case "Doppelzimmer":
+                return "150 Euro";
+            case "Suite":
+                return "200 Euro";
+            default:
+                return "N/A";
+        }
+    }
+
+    private string GenerateRandomBookingNumber()
+    {
+        Random random = new Random();
+        int randomNumber = random.Next(100000, 999999);
+        return randomNumber.ToString();
+    }
+}
